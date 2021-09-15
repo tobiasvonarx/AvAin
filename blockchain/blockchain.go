@@ -1,6 +1,9 @@
 package blockchain
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 type BlockChain struct {
 	Blocks []*Block // the blockchain consists of an array of (pointers to) blocks
@@ -28,9 +31,12 @@ func CreateBlockChain() *BlockChain {
 // display the blockchain as a string
 func (bc *BlockChain) Print() {
 	for i, block := range bc.Blocks {
-		fmt.Printf("Block %d\n", i)
-		fmt.Printf("Data: %s\n", block.Data)
-		fmt.Printf("Hash: %x\n", block.Hash)
-		fmt.Printf("Previous Hash: %x\n\n", block.PrevHash)
+		fmt.Printf("\nBlock %d\n", i)
+		fmt.Printf("Data: 					%s\n", block.Data)
+		fmt.Printf("Hash: 					%x\n", block.Hash)
+		fmt.Printf("Previous Hash:			 	%x\n", block.PrevHash)
+
+		pow := NewProof(block)
+		fmt.Printf("Proof Of Work:				%s\n", strconv.FormatBool(pow.Validate()))
 	}
 }

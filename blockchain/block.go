@@ -1,17 +1,13 @@
 package blockchain
 
-import (
-	"bytes"
-	"crypto/sha256"
-)
-
 type Block struct {
 	Data     []byte // data associated with the block
 	Hash     []byte // hash of the block
 	PrevHash []byte // the previous block's hash, in order to link the blocks together
+	Nonce    int    // important for the validation of the proof of work algorithm
 }
 
-// derive the hash of a block
+/* derive the hash of a block
 func (b *Block) DeriveHash() {
 	// to derive the hash of a block we need its data and the hash of the previous block
 	info := bytes.Join([][]byte{b.Data, b.PrevHash}, []byte{})
@@ -21,7 +17,7 @@ func (b *Block) DeriveHash() {
 
 	// push the hash into the hash field of the block
 	b.Hash = hash[:]
-}
+}*/
 
 // creates a block from given data and the hash of the previous block
 func CreateBlock(data string, prevHash []byte) *Block {
@@ -30,10 +26,16 @@ func CreateBlock(data string, prevHash []byte) *Block {
 		Data:     []byte(data), // convert the data string into a slice of bytes
 		Hash:     []byte{},     // an empty slice of bytes
 		PrevHash: prevHash,     // the hash of the previous block
+		Nonce:    0,            // initial nonce
 	}
 
-	// calculate the block's hash
-	block.DeriveHash()
+	// runs the proof of work algorithm on each created block, to sign it
+	pow := NewProof(block)
+	nonce, hash := pow.Run()
+
+	// set attributes
+	block.Hash = hash[:]
+	block.Nonce = nonce
 
 	// return a pointer to the block
 	return block
