@@ -1,6 +1,7 @@
 package globals
 
 const (
-	Debug      = false
-	Difficulty = 12
+	Debug      = true
+	Difficulty = 16
+	DBPath     = "./db/blocks"
 )

@@ -1,3 +1,13 @@
+# SPECIFIC FOR DB
+*.vlog
+*.sst
+MANIFEST
+
+
+
+
+
+
 ### Go ###
 # Binaries for programs and plugins
 *.exe

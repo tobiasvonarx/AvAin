@@ -76,7 +76,7 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 		hash = sha256.Sum256(data)
 
 		if globals.Debug {
-			fmt.Printf("\r%x\n", hash)
+			fmt.Printf("\r%x", hash)
 		}
 
 		// convert the hash into a bigint
@@ -93,7 +93,9 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 			nonce++
 		}
 	}
-
+	if globals.Debug {
+		fmt.Println()
+	}
 	// returns the nonce with which the Block was successfully signed, together with the requirement-fulfilling hash
 	return nonce, hash[:]
 }

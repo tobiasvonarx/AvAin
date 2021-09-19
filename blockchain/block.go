@@ -1,5 +1,10 @@
 package blockchain
 
+import (
+	"bytes"
+	"encoding/gob"
+)
+
 type Block struct {
 	Data     []byte // data associated with the block
 	Hash     []byte // hash of the block
@@ -46,4 +51,38 @@ func CreateBlock(data string, prevHash []byte) *Block {
 func CreateSentinel() *Block {
 	// create a block with an empty byte slice as its prevHash and return a reference to it
 	return CreateBlock("Sentinel", []byte{})
+}
+
+// BadgerDB only accepts arrays of bytes, so we need to serialize the blocks into bytes
+func (deserialized *Block) Serialize() []byte {
+	// create a buf to store the serialized block
+	var serialized bytes.Buffer
+
+	// create an encoder for the buffer
+	encoder := gob.NewEncoder(&serialized)
+
+	// encode our block and panic on error
+	if err := encoder.Encode(deserialized); err != nil {
+		panic(err)
+	}
+
+	// returns a representation of the block in bytes
+	return serialized.Bytes()
+}
+
+// deserialize an slice of bytes to recover its block representation
+func Deserialize(serialized []byte) *Block {
+	// declare the block that we want to our deserialized data to represent
+	var deserialized Block
+
+	// create the decoder using the bytes we want to deserialize
+	decoder := gob.NewDecoder(bytes.NewReader(serialized))
+
+	// decode into the block and panic on error
+	if err := decoder.Decode(&deserialized); err != nil {
+		panic(err)
+	}
+
+	// return a reference to the deserielized block in memory
+	return &deserialized
 }
